@@ -3,7 +3,7 @@ import requests
 from datetime import datetime
 import time
 
-# Function to fetch products for given lat, lng, and slug
+
 def fetch_products(lat, lng):
     url = "https://blinkit.com/"
     params = {
@@ -38,7 +38,7 @@ def extract_row(product, category, location):
         "date": datetime.today().date(),
         "l1_category": category["category_name"],
         "l1_category_id": category["category_id"],
-        "l2_category": category["sub_category_name"],  # ✅ update this if column name differs
+        "l2_category": category["sub_category_name"],  
         "l2_category_id": category["sub_category_id"],
         "store_id": location["location_name"],
         "variant_id": product.get("id"),
@@ -64,20 +64,20 @@ def scrape_blinkit_data(category_file, location_file, output_file="/content/samp
 
     for _, loc in locations.iterrows():
         for _, cat in categories.iterrows():
-           # print(f"🔍 Scraping: {cat['sub_category_name']} at {loc['location_name']}...")  # ✅ make sure column matches CSV
+           
             products = fetch_products(loc['latitude'], loc['longitude'])
 
             for product in products:
                 row = extract_row(product, cat, loc)
                 all_rows.append(row)
 
-            time.sleep(1)  # avoid rate-limiting
+            time.sleep(1)  
 
     df_out = pd.DataFrame(all_rows)
     df_out.to_csv(output_file, index=False)
-    print(f"\n✅ Scraped data saved to: {output_file}")
+    print(f"Scraped data saved to: {output_file}")
 
-# ✅ Only this line is needed to run everything:
+
 scrape_blinkit_data(
     "/content/sample_data/blinkit_categories.csv",
     "/content/sample_data/blinkit_locations.csv"
